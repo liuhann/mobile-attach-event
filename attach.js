@@ -16,12 +16,12 @@ $.fn.hold = function(cb, t) {
 	}
 	$(this).bind("touchstart", function(ev) {
 		$(this).addClass("pressed");
-		var tb = $(this);
+		var tb = this;
 		setTimeout(function() {
 			if (tb!=null && tb.hasClass("pressed")) {
 				$(tb).removeClass("pressed");
 				$(tb).data("touchon", false);
-				cb($(tb));
+				cb.bind(tb)();
 			}
 		}, t);
 	});
@@ -47,16 +47,7 @@ function attachEvent(src, cb, preventBubble) {
 		$(src).bind("touchend",  function() {
 			$(this).removeClass("pressed");
 			if($(this).data("touchon")) {
-				if ($(this).siblings(".sib").length > 0) {
-					if ($(this).hasClass("sibon")) {
-						return;
-					}
-					cb($(this));
-					$(this).siblings(".sib.sibon").removeClass("sibon");
-					$(this).addClass("sibon");
-				} else {
-					cb($(this));
-				}
+				cb.bind(this)();
 			}
 			$(this).data("touchon", false);
 		});
@@ -71,7 +62,7 @@ function attachEvent(src, cb, preventBubble) {
 		
 		$(src).bind("mouseup", function() {
 			$(this).removeClass("pressed");
-			cb($(this));
+			cb.bind(this)();
 		});
 	}
 }
